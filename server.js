@@ -41,6 +41,12 @@ app.post('/commit', function(req, res) {
   var ops = req.body.ops;
 
   requestReceived++;
+
+  if (requestReceived % 100 == 0) {
+    res.status(500);
+    res.send('error');
+  }
+
   opsReceived += ops.length;
 
   getDocument(documentId, function(document) {
