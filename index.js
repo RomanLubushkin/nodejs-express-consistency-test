@@ -27,10 +27,14 @@ process.on('exit', function() {
 
 
 // testing params
-var totalItemsCount = 1000000;
+var totalItemsCount = 400000;
 var itemsPerRequest = 200;
 var sendingInterval = 1;
-var statusUpdateInterval = 1000;
+var statusUpdateInterval = 500;
+
+// testing results
+var testPassed = false;
+var netErrors = '';
 
 // requests stat
 var requestsSent = 0;
@@ -42,15 +46,18 @@ var requestsSucceed = 0;
 var itemsSent = 0;
 var itemsDelivered = 0;
 var itemsLost = 0;
+var itemsResent = 0;
+
+var resendingQueue = [];
+var returnedItems = [];
+var returnedItemsMap = {};
 
 // server stat
 var requestReceived = NaN;
 var serverItemsReceived = NaN;
 var serverItemsStored = NaN;
 var serverKeysStored = NaN;
-
-var testPassed = false;
-
+var serverUpdatesSent = NaN;
 
 
 function runTests() {
@@ -74,18 +81,18 @@ function runTests() {
 
 
 function commitItems() {
-  var items = generateItems();
+  var updates = generateItems();
   var options = {
     method: 'post',
-    body: {items: items},
+    body: {updates: updates, packageIndex: returnedItems.length},
     json: true,
     url: 'http://localhost:3000/commit'
   };
 
-  itemsSent += items.length;
+  itemsSent += updates.length;
   requestsSent++;
 
-  var callback = onCommitComplete.bind(this, items);
+  var callback = onCommitComplete.bind(this, updates);
   request(options, callback);
 }
 
@@ -93,9 +100,13 @@ function onCommitComplete(items, error, response, body) {
   if (error) {
     requestsFailed++;
     itemsLost += items.length;
+    netErrors += '\n' + error.toString();
+    resendingQueue = resendingQueue.concat(items);
   } else {
     requestsSucceed++;
     itemsDelivered += items.length;
+
+    receiveItems(body.updates);
   }
   requestsComplete++;
 }
@@ -107,12 +118,27 @@ function generateItems() {
     result.push({uuid: uuid.v4()});
   }
 
+  itemsResent += resendingQueue.length;
+  result = result.concat(resendingQueue.splice(0));
+
   return result;
 }
 
+function receiveItems(updates) {
+  for (var i = 0, count = updates.length; i < count; i++) {
+    var pack = updates[i];
+    if (!returnedItemsMap[pack.uuid]) {
+      returnedItemsMap[pack.uuid] = pack;
+      returnedItems.push(pack);
+    }
+  }
+}
+
 function isTestComplete() {
-  return totalItemsCount == itemsSent &&
-      requestsSent == requestsComplete && requestsSent == requestReceived;
+  var allItemsSent = totalItemsCount == itemsSent;
+  var allItemsDeliveredToServer = totalItemsCount == serverItemsReceived;
+  var allRequestsComplete = requestsSent == requestsComplete;
+  return allItemsSent && allItemsDeliveredToServer && allRequestsComplete;
 }
 
 
@@ -128,12 +154,18 @@ function requestStatus() {
     serverItemsReceived = body.updatesReceived;
     serverItemsStored = body.updatesStored;
     serverKeysStored = body.uuidsStored;
+    serverUpdatesSent = body.updatesSent;
 
-    testPassed =
-        totalItemsCount == serverItemsStored &&
-        totalItemsCount == serverKeysStored;
+    checkTestPassed();
     reportStatus();
   });
+}
+
+function checkTestPassed() {
+  testPassed =
+        totalItemsCount == serverItemsStored &&
+        totalItemsCount == serverKeysStored &&
+        totalItemsCount == returnedItems.length;
 }
 
 
@@ -141,18 +173,23 @@ function reportStatus() {
   console.log(
       'Status report' +
       '\n    Requests - sent: %d, received: %d, complete: %d' +
-      '\n    Items - sent: %d, delivered: %d, lost: %d' +
-      '\n    Server - received: %d, stored: %d, keys stored: %d' +
+      '\n    Items - sent: %d, delivered: %d, lost: %d, resent: %d, returned: %d' +
+      '\n    Server - received: %d, stored: %d, keys stored: %d, sent: %d' +
       '\nTest complete: %s',
       requestsSent, requestReceived, requestsComplete,
-      itemsSent, itemsDelivered, itemsLost,
-      serverItemsReceived, serverItemsStored, serverKeysStored,
+      itemsSent, itemsDelivered, itemsLost, itemsResent, returnedItems.length,
+      serverItemsReceived, serverItemsStored, serverKeysStored, serverUpdatesSent,
       isTestComplete()
   );
 }
 
 
 function exit() {
+  checkTestPassed();
+  reportStatus();
+
+  if (netErrors) console.log('Net errors:\n' + netErrors);
+
   if (testPassed) {
     console.log('Test passed');
     process.exit(0);
@@ -160,4 +197,6 @@ function exit() {
     console.error('Test failed');
     process.exit(1);
   }
+
+
 }

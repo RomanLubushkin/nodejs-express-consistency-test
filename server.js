@@ -8,29 +8,51 @@ var storageMap = {};
 // stat
 var requestReceived = 0;
 var updatesReceived = 0;
+var updatesSent = 0;
 
 // run node server
 var app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.post('/commit', function(req, res) {
-  var items = req.body.items;
-
-  requestReceived++;
-  updatesReceived += items.length;
-
-  for (var i = 0, count = items.length; i < count; i++) {
-    var item = items[i];
-    if (!storageMap[item.uuid]) {
-      storageMap[item.uuid] = item;
-      storage.push(item);
-    }
-  }
-
-  res.status(200);
+app.get('/', function(req, res) {
   res.send('ok');
 });
+
+app.post('/commit', function(req, res) {
+  var packageIndex = req.body.packageIndex;
+  var updates = req.body.updates;
+
+  requestReceived++;
+  updatesReceived += updates.length;
+
+  applyUpdates(updates);
+
+  var returnUpdates = storage.slice(packageIndex, storage.length);
+  updatesSent += returnUpdates.length;
+
+  var result  = {
+    updates: returnUpdates
+  };
+
+  res.status(200);
+  res.send(JSON.stringify(result));
+});
+
+
+function applyUpdates(updates) {
+  for (var i = 0, count = updates.length; i < count; i++) {
+    var pack = updates[i];
+    if (!storageMap[pack.uuid]) {
+      storageMap[pack.uuid] = pack;
+      storage.push(pack);
+    }
+  }
+}
+
+function searchForUpdates(packageIndex) {
+  //return
+}
 
 
 app.post('/status', function(req, res) {
@@ -38,7 +60,8 @@ app.post('/status', function(req, res) {
     requestReceived: requestReceived,
     updatesReceived: updatesReceived,
     updatesStored: storage.length,
-    uuidsStored: Object.keys(storageMap).length
+    uuidsStored: Object.keys(storageMap).length,
+    updatesSent: updatesSent
   };
   res.status(200);
   res.send(JSON.stringify(status));
