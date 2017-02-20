@@ -1,4 +1,5 @@
 var request = require('request');
+var syncRequest = require('sync-request');
 var uuid = require('uuid');
 var cljs = require('collaborativejs');
 
@@ -28,10 +29,10 @@ process.on('exit', function() {
 
 
 // testing params
-var totalItemsCount = 100000;
+var totalItemsCount = 300000;
 var itemsPerRequest = 200;
-var generatingInterval = 4;
-var sendingInterval = 2;
+var generatingInterval = 1;
+var sendingInterval = 1;
 var statusUpdateInterval = 500;
 var timerObj = {setTimeout: setTimeout, clearTimeout: clearTimeout};
 
@@ -64,24 +65,43 @@ var serverOpsSent = NaN;
 
 // document
 var document = null;
-
+var site1 = null;
+var site2 = null;
 
 
 function runTests() {
-  var options = {
-    method: 'post',
-    json: true,
-    url: 'http://localhost:3000/create'
-  };
+  document = createDocument();
+  //site1 = createSite(document.id);
+  //site2 = createSite(document.id);
+  startSending();
+}
 
-  request(options, function(error, response, body) {
-    document = body.document;
-    startSendingOps();
+function createSite(documentId) {
+  var result = syncRequest('POST', 'http://localhost:3000/document/' + documentId);
+  var data = JSON.parse(result.getBody());
+  var site = new cljs.Site(data.siteId);
+  var net = new cljs.net.Http(returnedOps.length, timerObj);
+
+  site.register(
+      data.document.id,
+      cljs.ops.string.transform,
+      cljs.ops.string.invert,
+      data.document.context
+  );
+  site.update(data.document.ops);
+
+  net.requestAbortAllowed(false);
+  net.sendFn(sendFunction);
+  net.listen('updates-received', function(evt) {
+    console.log('her');
   });
+
+  return {id: data.siteId, site: site, document: data.document, net: net};
 }
 
 
-function startSendingOps() {
+
+function startSending() {
   var net = new cljs.net.Http(returnedOps.length, timerObj);
   net.requestAbortAllowed(false);
   net.sendFn(sendFunction);
@@ -131,15 +151,24 @@ function sendFunction(ops, packageIndex, onComplete) {
   };
 }
 
+function createDocument() {
+  var result = syncRequest('POST', 'http://localhost:3000/create');
+  var response = JSON.parse(result.getBody());
+  return response.document;
+}
+
 function onCommitComplete(ops, cotOnCompleteCallback, error, response, body) {
-  //deliveredUpdates, isSuccess, isAbort, packageIndex, receivedUpdates
-  if (error) {
+  if (error || response.statusCode == 500) {
     requestsFailed++;
     opsLost += ops.length;
-    netErrors += '\n' + error.toString();
+
+    if (error) {
+      netErrors += '\n' + error.toString();
+    }
 
     cotOnCompleteCallback(false, false, returnedOps.length, body.ops);
   } else {
+    if (!body.ops) console.log(body);
     requestsSucceed++;
     opsDelivered += ops.length;
     receiveOps(body.ops);
@@ -173,7 +202,7 @@ function isTestComplete() {
   var allOpsSent = totalItemsCount == opsSent;
   var allOpsDeliveredToServer = totalItemsCount == serverOpsReceived;
   var allRequestsComplete = requestsSent == requestsComplete;
-  return allOpsSent && allOpsDeliveredToServer && allRequestsComplete;
+  return testPassed || (allOpsSent && allOpsDeliveredToServer && allRequestsComplete);
 }
 
 
@@ -212,11 +241,11 @@ function reportStatus() {
   console.log(
       'Status report' +
       '\n    Requests - sent: %d, received by server: %d, complete: %d, succeed: %d, failed: %d' +
-      '\n    Client Ops - sent: %d, delivered: %d, lost: %d, resent: %d, returned: %d' +
+      '\n    Client Ops - generated: %d, sent: %d, delivered: %d, lost: %d, returned: %d' +
       '\n    Server Ops - received: %d, stored: %d, keys stored: %d, sent: %d' +
       '\nTest complete: %s',
       requestsSent, requestReceived, requestsComplete, requestsSucceed, requestsFailed,
-      opsSent, opsDelivered, opsLost, opsResent, returnedOps.length,
+      opsGenerated, opsSent, opsDelivered, opsLost, opsResent, returnedOps.length,
       serverOpsReceived, serverOpsStored, serverIdsStored, serverOpsSent,
       isTestComplete()
   );
