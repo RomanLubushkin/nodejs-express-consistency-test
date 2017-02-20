@@ -57,20 +57,21 @@ app.post('/commit', function(req, res) {
   if (requestReceived % 50 == 0) {
     res.status(500);
     res.send('error');
+  } else {
+
+    opsReceived += ops.length;
+
+    getDocument(documentId, function(document) {
+      applyOps(document, ops);
+
+      var returnOps = searchForOps(document, packageIndex);
+      opsSent += returnOps.length;
+
+      var result = {ops: returnOps};
+      res.status(200);
+      res.send(JSON.stringify(result));
+    });
   }
-
-  opsReceived += ops.length;
-
-  getDocument(documentId, function(document) {
-    applyOps(document, ops);
-
-    var returnOps = searchForOps(document, packageIndex);
-    opsSent += returnOps.length;
-
-    var result = {ops: returnOps};
-    res.status(200);
-    res.send(JSON.stringify(result));
-  });
 });
 
 
