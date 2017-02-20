@@ -35,6 +35,18 @@ app.post('/create', function(req, res) {
   });
 });
 
+app.post('/document/:id', function(req, res) {
+  var documentId = req.params.id;
+
+  getDocument(documentId, function(document) {
+    res.status(200);
+    res.send(JSON.stringify({
+      siteId: uuid.v1(),
+      document: document
+    }));
+  });
+});
+
 app.post('/commit', function(req, res) {
   var documentId = req.body.documentId;
   var packageIndex = req.body.packageIndex;
@@ -42,7 +54,7 @@ app.post('/commit', function(req, res) {
 
   requestReceived++;
 
-  if (requestReceived % 100 == 0) {
+  if (requestReceived % 50 == 0) {
     res.status(500);
     res.send('error');
   }
@@ -93,7 +105,10 @@ function applyOps(document, ops) {
 }
 
 function searchForOps(document, packageIndex) {
-  return document.ops.slice(packageIndex, document.ops.length);
+  var endIndex = (document.ops.length - packageIndex > 200) ?
+      (packageIndex + 200) :
+      document.ops.length;
+  return document.ops.slice(packageIndex, endIndex);
 }
 // endregion
 
