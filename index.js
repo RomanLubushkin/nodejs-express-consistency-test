@@ -32,8 +32,11 @@ process.on('exit', function() {
 var totalItemsCount = 10;
 var itemsPerRequest = 1;
 var generatingInterval = 1;
-var sendingInterval = 1;
+var sendingInterval = 2;
 var statusUpdateInterval = 500;
+var availableOps = 2;
+//0 - insert only, 1 - insert + remove,
+// * 2 - insert + remove + undo, 3 + insert + remove + undo + redo
 var timerObj = {setTimeout: setTimeout, clearTimeout: clearTimeout};
 
 // testing results
@@ -51,12 +54,10 @@ var opsGenerated = 0;
 var opsSent = 0;
 var opsDelivered = 0;
 var opsLost = 0;
-var opsStat = {ins: 0, rm: 0, undo: 0, redo: 0};
-
-var returnedOps = [];
-var returnedOpsMap = {};
+var opsStat = {ins: 0, rm: 0, undo: 0, redo: 0, log: [], types: []};
 
 // server stat
+var serverRequestWithDataReceived = NaN;
 var requestReceived = NaN;
 var serverOpsReceived = NaN;
 var serverOpsStored = NaN;
@@ -89,9 +90,10 @@ function createModel(documentId) {
   var result = syncRequest('POST', 'http://localhost:3000/document/' + documentId);
   var data = JSON.parse(result.getBody());
   var site = new cljs.Site(data.siteId);
-  var net = new cljs.net.Http(returnedOps.length, timerObj);
-  var model = {siteId: data.siteId, site: site, document: data.document, net: net};
-  var callback = onSiteReceivedUpdates.bind(this, model);
+  var net = new cljs.net.Http(0, timerObj);
+  var model = {siteId: data.siteId, site: site, document: data.document, net: net, returnedOps: [], returnedOpsMap: {}};
+  var receivedUpdatesCallback = onSiteReceivedUpdates.bind(this, model);
+  var sendFunctionBinding = sendFunction.bind(this, model);
 
   site.register(
       data.document.id,
@@ -102,8 +104,8 @@ function createModel(documentId) {
   site.update(data.document.ops);
 
   net.requestAbortAllowed(false);
-  net.sendFn(sendFunction);
-  net.listen('updates-received', callback);
+  net.sendFn(sendFunctionBinding);
+  net.listen('updates-received', receivedUpdatesCallback);
 
   return model;
 }
@@ -124,10 +126,10 @@ function onSiteReceivedUpdates(model, evt) {
 function startSending() {
   var generatingIntervalId = setInterval(function() {
     if (opsGenerated < totalItemsCount) {
-      var site = (Math.round(Math.random()) == 0) ? model1 : model2;
-      var ops = generateOps(site);
+      var model = (Math.round(Math.random()) == 0) ? model1 : model2;
+      var ops = generateOps(model);
       opsGenerated += ops.length;
-      site.net.send(ops);
+      model.net.send(ops);
     } else {
       clearInterval(generatingIntervalId);
     }
@@ -149,7 +151,7 @@ function startSending() {
 }
 
 
-function sendFunction(ops, packageIndex, onComplete) {
+function sendFunction(model, ops, packageIndex, onComplete) {
   var options = {
     method: 'post',
     body: {
@@ -160,16 +162,17 @@ function sendFunction(ops, packageIndex, onComplete) {
     json: true,
     url: 'http://localhost:3000/commit'
   };
+
   opsSent += ops.length;
   requestsSent++;
-  var callback = onCommitComplete.bind(this, ops, onComplete);
+  var callback = onCommitComplete.bind(this, model, ops, onComplete);
   request(options, callback);
 
   return function() {
   };
 }
 
-function onCommitComplete(ops, cotOnCompleteCallback, error, response, body) {
+function onCommitComplete(model, ops, cotOnCompleteCallback, error, response, body) {
   if (error || response.statusCode == 500) {
     requestsFailed++;
     opsLost += ops.length;
@@ -178,45 +181,46 @@ function onCommitComplete(ops, cotOnCompleteCallback, error, response, body) {
       netErrors += '\n' + error.toString();
     }
 
-    cotOnCompleteCallback(false, false, returnedOps.length, body.ops);
+    cotOnCompleteCallback(false, false, model.returnedOps.length, body.ops);
   } else {
     if (!body.ops) console.log(body);
     requestsSucceed++;
     opsDelivered += ops.length;
-    receiveOps(body.ops);
+    receiveOps(model, body.ops);
 
-    cotOnCompleteCallback(true, false, returnedOps.length, body.ops);
+    cotOnCompleteCallback(true, false, model.returnedOps.length, body.ops);
   }
   requestsComplete++;
 }
 
-function generateOps(site) {
+function generateOps(model) {
   var result = [];
-
+  var tuple = null;
   for (var i = 0; i < itemsPerRequest; i++) {
-    var tuple = makeRandOps(site.document.id, site.site, site.document.data, opsStat, undefined, 1);
-    site.document.data = cljs.ops.string.exec(site.document.data, tuple.toExec[site.document.id]);
+    tuple = makeRandOps(model.document.id, model.site, model.document.data, opsStat, undefined, availableOps);
+    model.document.data = cljs.ops.string.exec(model.document.data, tuple.toExec[model.document.id]);
     result.push({id: uuid.v4(), updates: tuple.toSend});
   }
 
   return result;
 }
 
-function receiveOps(ops) {
+function receiveOps(model, ops) {
   for (var i = 0, count = ops.length; i < count; i++) {
     var op = ops[i];
-    if (!returnedOpsMap[op.id]) {
-      returnedOpsMap[op.id] = ops;
-      returnedOps.push(ops);
+    if (!model.returnedOpsMap[op.id]) {
+      model.returnedOpsMap[op.id] = ops;
+      model.returnedOps.push(ops);
     }
   }
 }
 
 function isTestComplete() {
-  var allOpsSent = totalItemsCount == opsSent;
-  var allOpsDeliveredToServer = totalItemsCount == serverOpsReceived;
-  var allRequestsComplete = requestsSent == requestsComplete;
-  return testPassed || (allOpsSent && allOpsDeliveredToServer && allRequestsComplete);
+  return totalItemsCount == serverOpsStored &&
+      totalItemsCount == serverIdsStored &&
+      totalItemsCount == serverUpdatesStored &&
+      totalItemsCount == model1.returnedOps.length &&
+      totalItemsCount == model2.returnedOps.length;
 }
 
 
@@ -229,6 +233,7 @@ function requestStatus(opt_callback) {
   };
 
   request(options, function(error, response, body) {
+    serverRequestWithDataReceived = body.requestWithDataReceived;
     requestReceived = body.requestReceived;
     serverOpsReceived = body.opsReceived;
     serverOpsSent = body.opsSent;
@@ -251,8 +256,7 @@ function checkTestPassed() {
       totalItemsCount == serverIdsStored &&
       totalItemsCount == serverUpdatesStored &&
       model1.document.data == serverDocumentData &&
-      model2.document.data == serverDocumentData &&
-      totalItemsCount == returnedOps.length;
+      model2.document.data == serverDocumentData;
 }
 
 
@@ -260,8 +264,8 @@ function reportStatus() {
   console.log(
       'Status report' +
       '\n    Requests - sent: %d, received by server: %d, complete: %d, succeed: %d, failed: %d' +
-      '\n    Client Ops - generated: %d, sent: %d, delivered: %d, lost: %d, returned: %d' +
-      '\n    Server Ops - received: %d, stored: %d, keys stored: %d, updatesStored: %d, sent: %d' +
+      '\n    Client Ops - generated: %d, sent: %d, delivered: %d, lost: %d, model1: %d, model2: %d' +
+      '\n    Server Ops - received: %d, with data: %d, stored: %d, keys stored: %d, updatesStored: %d, sent: %d' +
       '\n    Document data: ' +
       '\n        server: %s' +
       '\n        model1: %s' +
@@ -269,8 +273,8 @@ function reportStatus() {
       '\n        ops stat: %s' +
       '\nTest complete: %s',
       requestsSent, requestReceived, requestsComplete, requestsSucceed, requestsFailed,
-      opsGenerated, opsSent, opsDelivered, opsLost, returnedOps.length,
-      serverOpsReceived, serverOpsStored, serverIdsStored, serverUpdatesStored, serverOpsSent,
+      opsGenerated, opsSent, opsDelivered, opsLost, model1.returnedOps.length, model2.returnedOps.length,
+      serverOpsReceived, serverRequestWithDataReceived, serverOpsStored, serverIdsStored, serverUpdatesStored, serverOpsSent,
       serverDocumentData, model1.document.data, model2.document.data, JSON.stringify(opsStat),
       isTestComplete()
   );
@@ -324,28 +328,42 @@ function makeRandOps(docId, site, data, stat, opt_opType, opt_allowedOps) {
       tuple = site.commit(docId, ops);
       if (stat) stat.rm++;
     } else {
+      opType = 1;
       ops = getRandInsOps(data);
       tuple = site.commit(docId, ops);
       if (stat) stat.ins++;
     }
   } else if (opType == 3) {
     tuple = site.undo();
-    if (tuple) {
-      if (stat) stat.undo++;
+    if (tuple && tuple.toSend.length) {
+      if (stat) {
+        stat.undo++;
+        stat.log.push('undo');
+      }
     } else {
+      opType = 1;
       ops = getRandInsOps(data);
       tuple = site.commit(docId, ops);
       if (stat) stat.ins++;
     }
   } else {
     tuple = site.redo();
-    if (tuple) {
-      if (stat) stat.redo++;
+    if (tuple && tuple.toSend.length) {
+      if (stat) {
+        stat.redo++;
+        stat.log.push('redo');
+      }
     } else {
+      opType = 1;
       ops = getRandInsOps(data);
       tuple = site.commit(docId, ops);
       if (stat) stat.ins++;
     }
+  }
+
+  if (stat) {
+    stat.types.push(site.id() + '|' + opType);
+    if (ops) stat.log = stat.log.concat(ops);
   }
 
   return tuple;

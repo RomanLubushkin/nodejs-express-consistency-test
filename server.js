@@ -9,6 +9,7 @@ var storage = {};
 
 // stat
 var requestReceived = 0;
+var requestWithDataReceived = 0;
 var opsReceived = 0;
 var opsSent = 0;
 
@@ -56,6 +57,7 @@ app.post('/commit', function(req, res) {
   var ops = req.body.ops;
 
   requestReceived++;
+  if (ops.length) requestWithDataReceived++;
 
   if (requestReceived % 50 == 0) {
     res.status(500);
@@ -65,17 +67,30 @@ app.post('/commit', function(req, res) {
     opsReceived += ops.length;
 
     getDocument(documentId, function(document) {
-      applyOps(document, ops);
+      try {
+        applyOps(document, ops);
+      } catch (e) {
+        console.log('----------------------------------------------------------------------');
+        console.log('Failed to apply updates', ops);
+        console.log(e);
+        console.log('----------------------------------------------------------------------');
+      }
 
-      //updateDocument(document, function() {
-      var returnOps = searchForOps(document, packageIndex);
+
+      try {
+        var returnOps = searchForOps(document, packageIndex);
+      } catch (e) {
+        console.log('----------------------------------------------------------------------');
+        console.log('Failed to find updates');
+        console.log(e);
+        console.log('----------------------------------------------------------------------');
+      }
       opsSent += returnOps.length;
 
       var result = {ops: returnOps};
       res.status(200);
       res.send(JSON.stringify(result));
     });
-    //});
   }
 });
 
@@ -87,6 +102,7 @@ app.post('/stat', function(req, res) {
     var status = {
       // server stat
       requestReceived: requestReceived,
+      requestWithDataReceived: requestWithDataReceived,
       opsReceived: opsReceived,
       opsSent: opsSent,
 
@@ -103,26 +119,22 @@ app.post('/stat', function(req, res) {
 
 // region ---- working with document ops
 function applyOps(document, ops) {
-  try {
-    var site = new cljs.Site();
-    site.register(document.id, cljs.ops.string.transform, cljs.ops.string.invert, document.context);
-    site.update(document.updates);
+  var site = new cljs.Site();
+  site.register(document.id, cljs.ops.string.transform, cljs.ops.string.invert, document.context);
+  site.update(document.updates);
 
-    for (var i = 0, count = ops.length; i < count; i++) {
-      var op = ops[i];
-      if (!document.opsMap[op.id]) {
-        var tuple = site.update(op.updates);
-        var context = site.getState(document.id);
+  for (var i = 0, count = ops.length; i < count; i++) {
+    var op = ops[i];
+    if (!document.opsMap[op.id]) {
+      var tuple = site.update(op.updates);
+      var context = site.getState(document.id);
 
-        document.opsMap[op.id] = op;
-        document.ops.push(op);
-        document.updates.push(op.updates[0]);
-        document.data = cljs.ops.string.exec(document.data, tuple.toExec[document.id]);
-        document.context = context;
-      }
+      document.opsMap[op.id] = op;
+      document.ops.push(op);
+      document.updates.push(op.updates[0]);
+      document.data = cljs.ops.string.exec(document.data, tuple.toExec[document.id]);
+      document.context = context;
     }
-  } catch (e) {
-    console.log(e)
   }
 }
 
