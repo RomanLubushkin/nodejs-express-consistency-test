@@ -29,10 +29,10 @@ process.on('exit', function() {
 
 
 // testing params
-var totalItemsCount = 300000;
-var itemsPerRequest = 200;
-var generatingInterval = 1;
-var sendingInterval = 1;
+var totalItemsCount = 2000;
+var itemsPerRequest = 100;
+var generatingInterval = 5;
+var sendingInterval = 10;
 var statusUpdateInterval = 500;
 var timerObj = {setTimeout: setTimeout, clearTimeout: clearTimeout};
 
@@ -51,7 +51,6 @@ var opsGenerated = 0;
 var opsSent = 0;
 var opsDelivered = 0;
 var opsLost = 0;
-var opsResent = 0;
 
 var returnedOps = [];
 var returnedOpsMap = {};
@@ -62,17 +61,19 @@ var serverOpsReceived = NaN;
 var serverOpsStored = NaN;
 var serverIdsStored = NaN;
 var serverOpsSent = NaN;
+var serverUpdatesStored = NaN;
+var serverDocumentData = 'N/A';
 
 // document
 var document = null;
-var site1 = null;
-var site2 = null;
+var model1 = null;
+var model2 = null;
 
 
 function runTests() {
   document = createDocument();
-  site1 = createSite(document.id);
-  site2 = createSite(document.id);
+  model1 = createModel(document.id);
+  model2 = createModel(document.id);
   startSending();
 }
 
@@ -83,11 +84,13 @@ function createDocument() {
   return response.document;
 }
 
-function createSite(documentId) {
+function createModel(documentId) {
   var result = syncRequest('POST', 'http://localhost:3000/document/' + documentId);
   var data = JSON.parse(result.getBody());
   var site = new cljs.Site(data.siteId);
   var net = new cljs.net.Http(returnedOps.length, timerObj);
+  var model = {siteId: data.siteId, site: site, document: data.document, net: net};
+  var callback = onSiteReceivedUpdates.bind(this, model);
 
   site.register(
       data.document.id,
@@ -99,24 +102,36 @@ function createSite(documentId) {
 
   net.requestAbortAllowed(false);
   net.sendFn(sendFunction);
-  net.listen('updates-received', function(evt) {
-    console.log('her');
-  });
+  net.listen('updates-received', callback);
 
-  return {id: data.siteId, site: site, document: data.document, net: net};
+  return model;
+}
+
+function onSiteReceivedUpdates(model, evt) {
+  var data = evt.value;
+  for (var i = 0, count = data.length; i < count; i++) {
+    var dataItem = data[i];
+    var updates = dataItem.updates;
+    if (updates[0].siteId != model.siteId) {
+      var tuple = model.site.update(updates);
+      var ops = tuple.toExec[model.document.id];
+      var missing = tuple.missing ? tuple.missing[model.document.id] : null;
+      model.document.data = cljs.ops.string.exec(model.document.data, ops);
+
+      //if (missing) {
+      //console.log('Client missing on update: ', missing);
+      //}
+    }
+  }
 }
 
 function startSending() {
-  var net = new cljs.net.Http(returnedOps.length, timerObj);
-  net.requestAbortAllowed(false);
-  net.sendFn(sendFunction);
-
-
   var generatingIntervalId = setInterval(function() {
     if (opsGenerated < totalItemsCount) {
-      var ops = generateOps();
+      var site = (Math.round(Math.random()) == 0) ? model1 : model2;
+      var ops = generateOps(site);
       opsGenerated += ops.length;
-      net.send(ops);
+      site.net.send(ops);
     } else {
       clearInterval(generatingIntervalId);
     }
@@ -125,14 +140,16 @@ function startSending() {
   var statusUpdateIntervalId = setInterval(function() {
     if (isTestComplete()) {
       clearInterval(statusUpdateIntervalId);
-      net.stop();
+      model1.net.stop();
+      model2.net.stop();
       exit();
     } else {
       requestStatus();
     }
   }, statusUpdateInterval);
 
-  net.start(sendingInterval);
+  model1.net.start(sendingInterval);
+  model2.net.start(sendingInterval);
 }
 
 
@@ -177,14 +194,13 @@ function onCommitComplete(ops, cotOnCompleteCallback, error, response, body) {
   requestsComplete++;
 }
 
-function generateOps() {
+function generateOps(site) {
   var result = [];
-  var site = (Math.round(Math.random()) == 0) ? site1 : site2;
 
   for (var i = 0; i < itemsPerRequest; i++) {
     var tuple = makeRandOps(site.document.id, site.site, site.document.data, null, null, 1);
     site.document.data = cljs.ops.string.exec(site.document.data, tuple.toExec[site.document.id]);
-    result.push(tuple.toSend);
+    result.push({id: uuid.v4(), updates: tuple.toSend});
   }
 
   return result;
@@ -223,6 +239,8 @@ function requestStatus(opt_callback) {
 
     serverOpsStored = body.opsStored;
     serverIdsStored = body.idsStored;
+    serverUpdatesStored = body.updatesStored;
+    serverDocumentData = body.documentData;
 
     checkTestPassed();
     reportStatus();
@@ -235,6 +253,9 @@ function checkTestPassed() {
   testPassed =
       totalItemsCount == serverOpsStored &&
       totalItemsCount == serverIdsStored &&
+      totalItemsCount == serverUpdatesStored &&
+      model1.document.data == serverDocumentData &&
+      model2.document.data == serverDocumentData &&
       totalItemsCount == returnedOps.length;
 }
 
@@ -244,11 +265,16 @@ function reportStatus() {
       'Status report' +
       '\n    Requests - sent: %d, received by server: %d, complete: %d, succeed: %d, failed: %d' +
       '\n    Client Ops - generated: %d, sent: %d, delivered: %d, lost: %d, returned: %d' +
-      '\n    Server Ops - received: %d, stored: %d, keys stored: %d, sent: %d' +
+      '\n    Server Ops - received: %d, stored: %d, keys stored: %d, updatesStored: %d, sent: %d' +
+      '\n    Document data: ' +
+      '\n        server: %s' +
+      '\n        model1: %s' +
+      '\n        model2: %s' +
       '\nTest complete: %s',
       requestsSent, requestReceived, requestsComplete, requestsSucceed, requestsFailed,
-      opsGenerated, opsSent, opsDelivered, opsLost, opsResent, returnedOps.length,
-      serverOpsReceived, serverOpsStored, serverIdsStored, serverOpsSent,
+      opsGenerated, opsSent, opsDelivered, opsLost, returnedOps.length,
+      serverOpsReceived, serverOpsStored, serverIdsStored, serverUpdatesStored, serverOpsSent,
+      serverDocumentData, model1.document.data, model2.document.data,
       isTestComplete()
   );
 }

@@ -1,6 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var uuid = require('uuid');
+var cljs = require('collaborativejs');
+
 
 // memory storage
 var storage = {};
@@ -26,6 +28,7 @@ app.post('/create', function(req, res) {
     data: 'Hello World',
     ops: [],
     opsMap: {},
+    updates: [],
     context: null
   };
 
@@ -64,6 +67,7 @@ app.post('/commit', function(req, res) {
     getDocument(documentId, function(document) {
       applyOps(document, ops);
 
+      //updateDocument(document, function() {
       var returnOps = searchForOps(document, packageIndex);
       opsSent += returnOps.length;
 
@@ -71,6 +75,7 @@ app.post('/commit', function(req, res) {
       res.status(200);
       res.send(JSON.stringify(result));
     });
+    //});
   }
 });
 
@@ -87,7 +92,9 @@ app.post('/stat', function(req, res) {
 
       // document stat
       opsStored: document.ops.length,
-      idsStored: Object.keys(document.opsMap).length
+      idsStored: Object.keys(document.opsMap).length,
+      updatesStored: document.updates.length,
+      documentData: document.data
     };
     res.status(200);
     res.send(JSON.stringify(status));
@@ -96,11 +103,21 @@ app.post('/stat', function(req, res) {
 
 // region ---- working with document ops
 function applyOps(document, ops) {
+  var site = new cljs.Site();
+  site.register(document.id, cljs.ops.string.transform, cljs.ops.string.invert, document.context);
+  site.update(document.updates);
+
   for (var i = 0, count = ops.length; i < count; i++) {
     var op = ops[i];
     if (!document.opsMap[op.id]) {
+      var tuple = site.update(op.updates);
+      var context = site.getState(document.id);
+
       document.opsMap[op.id] = op;
       document.ops.push(op);
+      document.updates.push(op.updates[0]);
+      document.data = cljs.ops.string.exec(document.data, tuple.toExec[document.id]);
+      document.context = context;
     }
   }
 }
