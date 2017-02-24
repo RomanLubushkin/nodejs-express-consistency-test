@@ -103,22 +103,26 @@ app.post('/stat', function(req, res) {
 
 // region ---- working with document ops
 function applyOps(document, ops) {
-  var site = new cljs.Site();
-  site.register(document.id, cljs.ops.string.transform, cljs.ops.string.invert, document.context);
-  site.update(document.updates);
+  try {
+    var site = new cljs.Site();
+    site.register(document.id, cljs.ops.string.transform, cljs.ops.string.invert, document.context);
+    site.update(document.updates);
 
-  for (var i = 0, count = ops.length; i < count; i++) {
-    var op = ops[i];
-    if (!document.opsMap[op.id]) {
-      var tuple = site.update(op.updates);
-      var context = site.getState(document.id);
+    for (var i = 0, count = ops.length; i < count; i++) {
+      var op = ops[i];
+      if (!document.opsMap[op.id]) {
+        var tuple = site.update(op.updates);
+        var context = site.getState(document.id);
 
-      document.opsMap[op.id] = op;
-      document.ops.push(op);
-      document.updates.push(op.updates[0]);
-      document.data = cljs.ops.string.exec(document.data, tuple.toExec[document.id]);
-      document.context = context;
+        document.opsMap[op.id] = op;
+        document.ops.push(op);
+        document.updates.push(op.updates[0]);
+        document.data = cljs.ops.string.exec(document.data, tuple.toExec[document.id]);
+        document.context = context;
+      }
     }
+  } catch (e) {
+    console.log(e)
   }
 }
 

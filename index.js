@@ -29,10 +29,10 @@ process.on('exit', function() {
 
 
 // testing params
-var totalItemsCount = 2000;
-var itemsPerRequest = 100;
-var generatingInterval = 5;
-var sendingInterval = 10;
+var totalItemsCount = 10;
+var itemsPerRequest = 1;
+var generatingInterval = 1;
+var sendingInterval = 1;
 var statusUpdateInterval = 500;
 var timerObj = {setTimeout: setTimeout, clearTimeout: clearTimeout};
 
@@ -51,6 +51,7 @@ var opsGenerated = 0;
 var opsSent = 0;
 var opsDelivered = 0;
 var opsLost = 0;
+var opsStat = {ins: 0, rm: 0, undo: 0, redo: 0};
 
 var returnedOps = [];
 var returnedOpsMap = {};
@@ -112,15 +113,10 @@ function onSiteReceivedUpdates(model, evt) {
   for (var i = 0, count = data.length; i < count; i++) {
     var dataItem = data[i];
     var updates = dataItem.updates;
-    if (updates[0].siteId != model.siteId) {
+    if (updates && updates.length && updates[0].siteId != model.siteId) {
       var tuple = model.site.update(updates);
       var ops = tuple.toExec[model.document.id];
-      var missing = tuple.missing ? tuple.missing[model.document.id] : null;
       model.document.data = cljs.ops.string.exec(model.document.data, ops);
-
-      //if (missing) {
-      //console.log('Client missing on update: ', missing);
-      //}
     }
   }
 }
@@ -198,7 +194,7 @@ function generateOps(site) {
   var result = [];
 
   for (var i = 0; i < itemsPerRequest; i++) {
-    var tuple = makeRandOps(site.document.id, site.site, site.document.data, null, null, 1);
+    var tuple = makeRandOps(site.document.id, site.site, site.document.data, opsStat, undefined, 1);
     site.document.data = cljs.ops.string.exec(site.document.data, tuple.toExec[site.document.id]);
     result.push({id: uuid.v4(), updates: tuple.toSend});
   }
@@ -270,11 +266,12 @@ function reportStatus() {
       '\n        server: %s' +
       '\n        model1: %s' +
       '\n        model2: %s' +
+      '\n        ops stat: %s' +
       '\nTest complete: %s',
       requestsSent, requestReceived, requestsComplete, requestsSucceed, requestsFailed,
       opsGenerated, opsSent, opsDelivered, opsLost, returnedOps.length,
       serverOpsReceived, serverOpsStored, serverIdsStored, serverUpdatesStored, serverOpsSent,
-      serverDocumentData, model1.document.data, model2.document.data,
+      serverDocumentData, model1.document.data, model2.document.data, JSON.stringify(opsStat),
       isTestComplete()
   );
 }
