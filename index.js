@@ -71,8 +71,8 @@ var site2 = null;
 
 function runTests() {
   document = createDocument();
-  //site1 = createSite(document.id);
-  //site2 = createSite(document.id);
+  site1 = createSite(document.id);
+  site2 = createSite(document.id);
   startSending();
 }
 
