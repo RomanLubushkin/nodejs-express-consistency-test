@@ -76,6 +76,13 @@ function runTests() {
   startSending();
 }
 
+
+function createDocument() {
+  var result = syncRequest('POST', 'http://localhost:3000/create');
+  var response = JSON.parse(result.getBody());
+  return response.document;
+}
+
 function createSite(documentId) {
   var result = syncRequest('POST', 'http://localhost:3000/document/' + documentId);
   var data = JSON.parse(result.getBody());
@@ -98,8 +105,6 @@ function createSite(documentId) {
 
   return {id: data.siteId, site: site, document: data.document, net: net};
 }
-
-
 
 function startSending() {
   var net = new cljs.net.Http(returnedOps.length, timerObj);
@@ -151,12 +156,6 @@ function sendFunction(ops, packageIndex, onComplete) {
   };
 }
 
-function createDocument() {
-  var result = syncRequest('POST', 'http://localhost:3000/create');
-  var response = JSON.parse(result.getBody());
-  return response.document;
-}
-
 function onCommitComplete(ops, cotOnCompleteCallback, error, response, body) {
   if (error || response.statusCode == 500) {
     requestsFailed++;
@@ -180,9 +179,12 @@ function onCommitComplete(ops, cotOnCompleteCallback, error, response, body) {
 
 function generateOps() {
   var result = [];
+  var site = (Math.round(Math.random()) == 0) ? site1 : site2;
 
   for (var i = 0; i < itemsPerRequest; i++) {
-    result.push({id: uuid.v4()});
+    var tuple = makeRandOps(site.document.id, site.site, site.document.data, null, null, 1);
+    site.document.data = cljs.ops.string.exec(site.document.data, tuple.toExec[site.document.id]);
+    result.push(tuple.toSend);
   }
 
   return result;
@@ -267,3 +269,110 @@ function exit() {
     });
   }, 1000);
 }
+
+
+// region ---- random string ops (need move to cot)
+/**
+ * @param {string} docId
+ * @param {cljs.Site} site
+ * @param {string} data
+ * @param {{ins:number, rm:number,undo:number,redo:number}} stat
+ * @param {number=} opt_opType
+ * @param {number=} opt_allowedOps 0 - insert only, 1 - insert + remove,
+ * 2 - insert + remove + undo, 3 + insert + remove + undo + redo
+ * @return {!Array.<Object>}
+ */
+function makeRandOps(docId, site, data, stat, opt_opType, opt_allowedOps) {
+  var allowedOps = opt_allowedOps == undefined ?
+      3 : opt_allowedOps;
+  var opType = opt_opType == undefined ?
+      (Math.round(Math.random() * allowedOps) + 1) :
+      opt_opType;
+
+  var ops, tuple;
+
+  if (opType == 1) {
+    ops = getRandInsOps(data);
+    tuple = site.commit(docId, ops);
+    if (stat) stat.ins++;
+  } else if (opType == 2) {
+    ops = getRandRmOps(data);
+    if (ops) {
+      tuple = site.commit(docId, ops);
+      if (stat) stat.rm++;
+    } else {
+      ops = getRandInsOps(data);
+      tuple = site.commit(docId, ops);
+      if (stat) stat.ins++;
+    }
+  } else if (opType == 3) {
+    tuple = site.undo();
+    if (tuple) {
+      if (stat) stat.undo++;
+    } else {
+      ops = getRandInsOps(data);
+      tuple = site.commit(docId, ops);
+      if (stat) stat.ins++;
+    }
+  } else {
+    tuple = site.redo();
+    if (tuple) {
+      if (stat) stat.redo++;
+    } else {
+      ops = getRandInsOps(data);
+      tuple = site.commit(docId, ops);
+      if (stat) stat.ins++;
+    }
+  }
+
+  return tuple;
+}
+
+
+/**
+ * @param {string} data
+ * @param {Array.<string>=} opt_alphabet
+ * @param {number=} opt_maxCount
+ * @return {Array<!cljs.ops.string.Operation>}
+ */
+function getRandInsOps(data, opt_alphabet, opt_maxCount) {
+  if (!opt_maxCount) opt_maxCount = 3;
+  if (!opt_alphabet) opt_alphabet = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
+  var insCount = Math.floor(Math.random() * opt_maxCount) + 1;
+  var insIndex = Math.floor(Math.random() * data.length + 1);
+  insIndex = insIndex < 0 ? 0 : insIndex;
+  insIndex = insIndex > data.length ? data.length : insIndex;
+
+  var index, insString = '';
+  for (var i = 0, count = insCount; i < count; i++) {
+    index = Math.floor(Math.random() * 6);
+    insString += opt_alphabet[index];
+  }
+
+  var newData = [
+    data.slice(0, insIndex),
+    insString,
+    data.slice(insIndex)
+  ].join('');
+
+  return cljs.ops.string.genOps(data, newData);
+}
+
+
+/**
+ * @param {string} data
+ * @param {number=} opt_maxCount
+ * @return {Array<!cljs.ops.string.Operation>}
+ */
+function getRandRmOps(data, opt_maxCount) {
+  var result = null;
+  if (data.length) {
+    if (!opt_maxCount) opt_maxCount = 3;
+    var rmIndex = Math.floor(Math.random() * (data.length - 1));
+    var rmCount = Math.min(Math.floor(Math.random() * opt_maxCount) + 1, data.length - rmIndex);
+    var newData = data.replace(data.substring(rmIndex, rmIndex + rmCount), '');
+    result = cljs.ops.string.genOps(data, newData);
+  }
+  return result;
+}
+// endregion
