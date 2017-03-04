@@ -118,22 +118,25 @@ app.post('/stat', function(req, res) {
 });
 
 // region ---- working with document ops
-function applyOps(document, ops) {
-  var site = new cljs.Site();
-  site.register(document.id, cljs.ops.string.transform, cljs.ops.string.invert, document.context);
-  site.update(document.updates);
+function applyOps(documentData, ops) {
+  var document = new cljs.Document(
+      cljs.ops.string.transform,
+      cljs.ops.string.invert,
+      documentData.id,
+      documentData.context);
+  document.update(documentData.updates);
 
   for (var i = 0, count = ops.length; i < count; i++) {
     var op = ops[i];
-    if (!document.opsMap[op.id]) {
-      var tuple = site.update(op.updates);
-      var context = site.getState(document.id);
+    if (!documentData.opsMap[op.id]) {
+      var tuple = document.update(op.updates);
+      var context = document.getContext(documentData.id);
 
-      document.opsMap[op.id] = op;
-      document.ops.push(op);
-      document.updates.push(op.updates[0]);
-      document.data = cljs.ops.string.exec(document.data, tuple.toExec[document.id]);
-      document.context = context;
+      documentData.opsMap[op.id] = op;
+      documentData.ops.push(op);
+      documentData.updates.push(op.updates[0]);
+      documentData.data = cljs.ops.string.exec(documentData.data, tuple.toExec);
+      documentData.context = context;
     }
   }
 }

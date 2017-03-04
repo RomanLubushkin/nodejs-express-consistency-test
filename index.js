@@ -29,14 +29,13 @@ process.on('exit', function() {
 
 
 // testing params
-var totalItemsCount = 10;
-var itemsPerRequest = 1;
+var totalOpsCount = 500;
+var opsPerRequest = 1;
 var generatingInterval = 1;
 var sendingInterval = 2;
 var statusUpdateInterval = 500;
-var availableOps = 2;
-//0 - insert only, 1 - insert + remove,
-// * 2 - insert + remove + undo, 3 + insert + remove + undo + redo
+//0 - insert only, 1 - insert/remove, 2 - insert/remove/undo, 3 - insert/remove/undo/redo
+var availableOps = 1;
 var timerObj = {setTimeout: setTimeout, clearTimeout: clearTimeout};
 
 // testing results
@@ -49,16 +48,17 @@ var requestsComplete = 0;
 var requestsFailed = 0;
 var requestsSucceed = 0;
 
-// items stat
+// ops stat
 var opsGenerated = 0;
 var opsSent = 0;
 var opsDelivered = 0;
 var opsLost = 0;
 var opsStat = {ins: 0, rm: 0, undo: 0, redo: 0, log: [], types: []};
+var printOpsStat = false;
 
 // server stat
-var serverRequestWithDataReceived = NaN;
-var requestReceived = NaN;
+var serverLoadedRequestReceived = NaN;
+var serverRequestsReceived = NaN;
 var serverOpsReceived = NaN;
 var serverOpsStored = NaN;
 var serverIdsStored = NaN;
@@ -89,21 +89,20 @@ function createDocument() {
 function createModel(documentId) {
   var result = syncRequest('POST', 'http://localhost:3000/document/' + documentId);
   var data = JSON.parse(result.getBody());
-  var site = new cljs.Site(data.siteId);
+  var documentData = data.document;
+  var document = new cljs.Document(
+      cljs.ops.string.transform,
+      cljs.ops.string.invert,
+      data.siteId,
+      documentData.context);
   var net = new cljs.net.Http(0, timerObj);
-  var model = {siteId: data.siteId, site: site, document: data.document, net: net, returnedOps: [], returnedOpsMap: {}};
+  var model = {document: document, documentData: documentData, net: net, returnedOps: [], returnedOpsMap: {}};
   var receivedUpdatesCallback = onSiteReceivedUpdates.bind(this, model);
   var sendFunctionBinding = sendFunction.bind(this, model);
 
-  site.register(
-      data.document.id,
-      cljs.ops.string.transform,
-      cljs.ops.string.invert,
-      data.document.context
-  );
-  site.update(data.document.ops);
+  document.update(documentData.ops);
 
-  net.requestAbortAllowed(false);
+  net.setRequestAbortAllowed(false);
   net.sendFn(sendFunctionBinding);
   net.listen('updates-received', receivedUpdatesCallback);
 
@@ -115,17 +114,16 @@ function onSiteReceivedUpdates(model, evt) {
   for (var i = 0, count = data.length; i < count; i++) {
     var dataItem = data[i];
     var updates = dataItem.updates;
-    if (updates && updates.length && updates[0].siteId != model.siteId) {
-      var tuple = model.site.update(updates);
-      var ops = tuple.toExec[model.document.id];
-      model.document.data = cljs.ops.string.exec(model.document.data, ops);
+    if (updates && updates.length && updates[0].siteId != model.document.getSiteId()) {
+      var tuple = model.document.update(updates);
+      model.documentData.data = cljs.ops.string.exec(model.documentData.data, tuple.toExec);
     }
   }
 }
 
 function startSending() {
   var generatingIntervalId = setInterval(function() {
-    if (opsGenerated < totalItemsCount) {
+    if (opsGenerated < totalOpsCount) {
       var model = (Math.round(Math.random()) == 0) ? model1 : model2;
       var ops = generateOps(model);
       opsGenerated += ops.length;
@@ -196,9 +194,9 @@ function onCommitComplete(model, ops, cotOnCompleteCallback, error, response, bo
 function generateOps(model) {
   var result = [];
   var tuple = null;
-  for (var i = 0; i < itemsPerRequest; i++) {
-    tuple = makeRandOps(model.document.id, model.site, model.document.data, opsStat, undefined, availableOps);
-    model.document.data = cljs.ops.string.exec(model.document.data, tuple.toExec[model.document.id]);
+  for (var i = 0; i < opsPerRequest; i++) {
+    tuple = makeRandOps(model.document, model.documentData.data, opsStat, undefined, availableOps);
+    model.documentData.data = cljs.ops.string.exec(model.documentData.data, tuple.toExec);
     result.push({id: uuid.v4(), updates: tuple.toSend});
   }
 
@@ -216,11 +214,11 @@ function receiveOps(model, ops) {
 }
 
 function isTestComplete() {
-  return totalItemsCount == serverOpsStored &&
-      totalItemsCount == serverIdsStored &&
-      totalItemsCount == serverUpdatesStored &&
-      totalItemsCount == model1.returnedOps.length &&
-      totalItemsCount == model2.returnedOps.length;
+  return totalOpsCount == serverOpsStored &&
+      totalOpsCount == serverIdsStored &&
+      totalOpsCount == serverUpdatesStored &&
+      totalOpsCount == model1.returnedOps.length &&
+      totalOpsCount == model2.returnedOps.length;
 }
 
 
@@ -233,8 +231,8 @@ function requestStatus(opt_callback) {
   };
 
   request(options, function(error, response, body) {
-    serverRequestWithDataReceived = body.requestWithDataReceived;
-    requestReceived = body.requestReceived;
+    serverLoadedRequestReceived = body.requestWithDataReceived;
+    serverRequestsReceived = body.serverRequestsReceived;
     serverOpsReceived = body.opsReceived;
     serverOpsSent = body.opsSent;
 
@@ -252,15 +250,16 @@ function requestStatus(opt_callback) {
 
 function checkTestPassed() {
   testPassed =
-      totalItemsCount == serverOpsStored &&
-      totalItemsCount == serverIdsStored &&
-      totalItemsCount == serverUpdatesStored &&
-      model1.document.data == serverDocumentData &&
-      model2.document.data == serverDocumentData;
+      totalOpsCount == serverOpsStored &&
+      totalOpsCount == serverIdsStored &&
+      totalOpsCount == serverUpdatesStored &&
+      model1.documentData.data == serverDocumentData &&
+      model2.documentData.data == serverDocumentData;
 }
 
 
 function reportStatus() {
+  var opsStat = printOpsStat ? JSON.stringify(opsStat) : 'disabled';
   console.log(
       'Status report' +
       '\n    Requests - sent: %d, received by server: %d, complete: %d, succeed: %d, failed: %d' +
@@ -272,10 +271,10 @@ function reportStatus() {
       '\n        model2: %s' +
       '\n        ops stat: %s' +
       '\nTest complete: %s',
-      requestsSent, requestReceived, requestsComplete, requestsSucceed, requestsFailed,
+      requestsSent, serverRequestsReceived, requestsComplete, requestsSucceed, requestsFailed,
       opsGenerated, opsSent, opsDelivered, opsLost, model1.returnedOps.length, model2.returnedOps.length,
-      serverOpsReceived, serverRequestWithDataReceived, serverOpsStored, serverIdsStored, serverUpdatesStored, serverOpsSent,
-      serverDocumentData, model1.document.data, model2.document.data, JSON.stringify(opsStat),
+      serverOpsReceived, serverLoadedRequestReceived, serverOpsStored, serverIdsStored, serverUpdatesStored, serverOpsSent,
+      serverDocumentData, model1.documentData.data, model2.documentData.data, JSON.stringify(opsStat),
       isTestComplete()
   );
 }
@@ -300,8 +299,7 @@ function exit() {
 
 // region ---- random string ops (need move to cot)
 /**
- * @param {string} docId
- * @param {cljs.Site} site
+ * @param {cljs.Document} document
  * @param {string} data
  * @param {{ins:number, rm:number,undo:number,redo:number}} stat
  * @param {number=} opt_opType
@@ -309,7 +307,7 @@ function exit() {
  * 2 - insert + remove + undo, 3 + insert + remove + undo + redo
  * @return {!Array.<Object>}
  */
-function makeRandOps(docId, site, data, stat, opt_opType, opt_allowedOps) {
+function makeRandOps(document, data, stat, opt_opType, opt_allowedOps) {
   var allowedOps = opt_allowedOps == undefined ?
       3 : opt_allowedOps;
   var opType = opt_opType == undefined ?
@@ -320,21 +318,21 @@ function makeRandOps(docId, site, data, stat, opt_opType, opt_allowedOps) {
 
   if (opType == 1) {
     ops = getRandInsOps(data);
-    tuple = site.commit(docId, ops);
+    tuple = document.commit(ops);
     if (stat) stat.ins++;
   } else if (opType == 2) {
     ops = getRandRmOps(data);
     if (ops) {
-      tuple = site.commit(docId, ops);
+      tuple = document.commit(ops);
       if (stat) stat.rm++;
     } else {
       opType = 1;
       ops = getRandInsOps(data);
-      tuple = site.commit(docId, ops);
+      tuple = document.commit(ops);
       if (stat) stat.ins++;
     }
   } else if (opType == 3) {
-    tuple = site.undo();
+    tuple = document.undo();
     if (tuple && tuple.toSend.length) {
       if (stat) {
         stat.undo++;
@@ -343,11 +341,11 @@ function makeRandOps(docId, site, data, stat, opt_opType, opt_allowedOps) {
     } else {
       opType = 1;
       ops = getRandInsOps(data);
-      tuple = site.commit(docId, ops);
+      tuple = document.commit(ops);
       if (stat) stat.ins++;
     }
   } else {
-    tuple = site.redo();
+    tuple = document.redo();
     if (tuple && tuple.toSend.length) {
       if (stat) {
         stat.redo++;
@@ -356,13 +354,13 @@ function makeRandOps(docId, site, data, stat, opt_opType, opt_allowedOps) {
     } else {
       opType = 1;
       ops = getRandInsOps(data);
-      tuple = site.commit(docId, ops);
+      tuple = document.commit(ops);
       if (stat) stat.ins++;
     }
   }
 
   if (stat) {
-    stat.types.push(site.id() + '|' + opType);
+    stat.types.push(document.getSiteId() + '|' + opType);
     if (ops) stat.log = stat.log.concat(ops);
   }
 
