@@ -69,14 +69,14 @@ var serverDocumentData = 'N/A';
 
 // document
 var document = null;
-var model1 = null;
-var model2 = null;
-
+var modelsCount = Math.floor(Math.random() * 10) + 1;
+var models = [];
 
 function runTests() {
   document = createDocument();
-  model1 = createModel(document.id);
-  model2 = createModel(document.id);
+  for (var i = 0; i < modelsCount; i++) {
+    models.push(createModel(document.id));
+  }
   startSending();
 }
 
@@ -131,7 +131,7 @@ function onSiteReceivedUpdates(model, evt) {
 function startSending() {
   var generatingIntervalId = setInterval(function() {
     if (opsGenerated < totalOpsCount) {
-      var model = (Math.round(Math.random()) == 0) ? model1 : model2;
+      var model = models[Math.floor(Math.random() * models.length - 1) + 1];
       var ops = generateOps(model);
       opsGenerated += ops.length;
       model.net.send(ops);
@@ -143,16 +143,18 @@ function startSending() {
   var statusUpdateIntervalId = setInterval(function() {
     if (isTestComplete()) {
       clearInterval(statusUpdateIntervalId);
-      model1.net.stop();
-      model2.net.stop();
+      models.forEach(function(model) {
+        model.net.stop();
+      });
       exit();
     } else {
       requestStatus();
     }
   }, statusUpdateInterval);
 
-  model1.net.start(sendingInterval);
-  model2.net.start(sendingInterval);
+  models.forEach(function(model) {
+    model.net.start(sendingInterval);
+  });
 }
 
 
@@ -224,8 +226,9 @@ function isTestComplete() {
   return totalOpsCount == serverOpsStored &&
       totalOpsCount == serverIdsStored &&
       totalOpsCount == serverUpdatesStored &&
-      totalOpsCount == model1.returnedOps.length &&
-      totalOpsCount == model2.returnedOps.length;
+      models.reduce(function(acc, model) {
+        return acc && model.returnedOps.length == totalOpsCount;
+      }, true);
 }
 
 
@@ -260,28 +263,33 @@ function checkTestPassed() {
       totalOpsCount == serverOpsStored &&
       totalOpsCount == serverIdsStored &&
       totalOpsCount == serverUpdatesStored &&
-      model1.documentData.data == serverDocumentData &&
-      model2.documentData.data == serverDocumentData;
+      models.reduce(function(acc, model) {
+        return acc && model.documentData.data == serverDocumentData;
+      }, true);
 }
 
 
 function reportStatus() {
   var opsStatStr = printOpsStat ? JSON.stringify(opsStat) : 'disabled';
+  var modelOps = models.reduce(function(acc, model) {
+    return acc + 'model' + models.indexOf(model) + ': ' + model.returnedOps.length;
+  }, '');
+  var modelData = models.reduce(function(acc, model) {
+    return acc + '\nmodel' + models.indexOf(model) + ': ' + model.documentData.data;
+  }, '');
   console.log(
       'Status report' +
       '\n    Requests - sent: %d, received by server: %d, complete: %d, succeed: %d, failed: %d' +
-      '\n    Client Ops - generated: %d, sent: %d, delivered: %d, lost: %d, model1: %d, model2: %d' +
+      '\n    Client Ops - generated: %d, sent: %d, delivered: %d, lost: %d, %s' +
       '\n    Server Ops - received: %d, with data: %d, stored: %d, keys stored: %d, updatesStored: %d, sent: %d' +
       '\n    Document data: ' +
-      '\n        server: %s' +
-      '\n        model1: %s' +
-      '\n        model2: %s' +
+      '\n        server: %s%s' +
       '\n        ops stat: %s' +
       '\nTest complete: %s',
       requestsSent, serverRequestsReceived, requestsComplete, requestsSucceed, requestsFailed,
-      opsGenerated, opsSent, opsDelivered, opsLost, model1.returnedOps.length, model2.returnedOps.length,
+      opsGenerated, opsSent, opsDelivered, opsLost, modelOps,
       serverOpsReceived, serverLoadedRequestReceived, serverOpsStored, serverIdsStored, serverUpdatesStored, serverOpsSent,
-      serverDocumentData, model1.documentData.data, model2.documentData.data, opsStatStr,
+      serverDocumentData, modelData, opsStatStr,
       isTestComplete()
   );
 }
