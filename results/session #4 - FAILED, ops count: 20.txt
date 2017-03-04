@@ -1,25 +1,31 @@
 Waiting for the server to startup
 
 Status report
-    Requests - sent: 131, received by server: NaN, complete: 130, succeed: 128, failed: 2
-    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model1: 20, model2: 20
-    Server Ops - received: 20, with data: 5, stored: 20, keys stored: 20, updatesStored: 20, sent: 40
+    Requests - sent: 346, received by server: NaN, complete: 343, succeed: 337, failed: 6
+    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model0: 20model1: 20model2: 20model3: 20model4: 20
+    Server Ops - received: 20, with data: 8, stored: 20, keys stored: 20, updatesStored: 20, sent: 100
     Document data: 
-        server: yqreytyweq
-        model1: yo qtreyyweq
-        model2: ttywyreywwwoweree
-        ops stat: {"ins":9,"rm":11,"undo":0,"redo":0,"log":[{"type":0,"at":11,"value":"ee"},{"type":1,"at":1,"value":"el"},{"type":1,"at":1,"value":"l"},{"type":0,"at":6,"value":"r"},{"type":0,"at":4,"value":"qy"},{"type":1,"at":3,"value":"l"},{"type":1,"at":2,"value":"l"},{"type":1,"at":7,"value":"or"},{"type":1,"at":6,"value":"Wl"},{"type":1,"at":6,"value":"dee"},{"type":0,"at":4,"value":"tww"},{"type":1,"at":0,"value":"Heq"},{"type":0,"at":3,"value":"qeq"},{"type":1,"at":9,"value":"rld"},{"type":0,"at":8,"value":"we"},{"type":1,"at":1,"value":"o W"},{"type":0,"at":2,"value":"yw"},{"type":1,"at":0,"value":"H"},{"type":0,"at":4,"value":"tyw"},{"type":0,"at":2,"value":"rey"}],"types":["8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|1"]}
+        server: qlwy
+model0: Hewyldqeey
+model1: Hellowey
+model2: rlweyq
+model3: HlwrWortd
+model4: HqelWldtq
+        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":0,"at":1,"value":"q"},{"type":1,"at":3,"value":"lo"},{"type":0,"at":11,"value":"eey"},{"type":1,"at":3,"value":" Wo"},{"type":0,"at":6,"value":"r"},{"type":0,"at":7,"value":"y"},{"type":1,"at":8,"value":"or"},{"type":1,"at":1,"value":"el"},{"type":1,"at":5,"value":" "},{"type":1,"at":0,"value":"H"},{"type":1,"at":7,"value":"or"},{"type":1,"at":5,"value":" Wo"},{"type":1,"at":2,"value":"llo"},{"type":0,"at":5,"value":"w"},{"type":0,"at":7,"value":"tq"},{"type":0,"at":10,"value":"q"},{"type":0,"at":3,"value":"ey"},{"type":1,"at":6,"value":"rld"},{"type":1,"at":4,"value":"lo "},{"type":1,"at":4,"value":"o"}],"types":["76148f10-0097-11e7-a52c-81e37c0431f9|1","76124520-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|1","76124520-0097-11e7-a52c-81e37c0431f9|2","76137da0-0097-11e7-a52c-81e37c0431f9|1","760f5ef0-0097-11e7-a52c-81e37c0431f9|1","76148f10-0097-11e7-a52c-81e37c0431f9|2","76124520-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|2","76124520-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|2","761133b0-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|2","761133b0-0097-11e7-a52c-81e37c0431f9|1","760f5ef0-0097-11e7-a52c-81e37c0431f9|1","76137da0-0097-11e7-a52c-81e37c0431f9|1","76124520-0097-11e7-a52c-81e37c0431f9|1","761133b0-0097-11e7-a52c-81e37c0431f9|2","76148f10-0097-11e7-a52c-81e37c0431f9|2","76137da0-0097-11e7-a52c-81e37c0431f9|2"]}
 Test complete: true
 
 Status report
-    Requests - sent: 348, received by server: NaN, complete: 348, succeed: 342, failed: 6
-    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model1: 20, model2: 20
-    Server Ops - received: 20, with data: 5, stored: 20, keys stored: 20, updatesStored: 20, sent: 40
+    Requests - sent: 754, received by server: NaN, complete: 754, succeed: 739, failed: 15
+    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model0: 20model1: 20model2: 20model3: 20model4: 20
+    Server Ops - received: 20, with data: 8, stored: 20, keys stored: 20, updatesStored: 20, sent: 100
     Document data: 
-        server: yqreytyweq
-        model1: yo qtreyyweq
-        model2: ttywyreywwwoweree
-        ops stat: {"ins":9,"rm":11,"undo":0,"redo":0,"log":[{"type":0,"at":11,"value":"ee"},{"type":1,"at":1,"value":"el"},{"type":1,"at":1,"value":"l"},{"type":0,"at":6,"value":"r"},{"type":0,"at":4,"value":"qy"},{"type":1,"at":3,"value":"l"},{"type":1,"at":2,"value":"l"},{"type":1,"at":7,"value":"or"},{"type":1,"at":6,"value":"Wl"},{"type":1,"at":6,"value":"dee"},{"type":0,"at":4,"value":"tww"},{"type":1,"at":0,"value":"Heq"},{"type":0,"at":3,"value":"qeq"},{"type":1,"at":9,"value":"rld"},{"type":0,"at":8,"value":"we"},{"type":1,"at":1,"value":"o W"},{"type":0,"at":2,"value":"yw"},{"type":1,"at":0,"value":"H"},{"type":0,"at":4,"value":"tyw"},{"type":0,"at":2,"value":"rey"}],"types":["8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee0dab0-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee2af70-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|2","8ee0dab0-0094-11e7-b816-75c6bc318422|1","8ee2af70-0094-11e7-b816-75c6bc318422|1"]}
+        server: qlwy
+model0: Hewyldqeey
+model1: Hellowey
+model2: rlweyq
+model3: HlwrWortd
+model4: HqelWldtq
+        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":0,"at":1,"value":"q"},{"type":1,"at":3,"value":"lo"},{"type":0,"at":11,"value":"eey"},{"type":1,"at":3,"value":" Wo"},{"type":0,"at":6,"value":"r"},{"type":0,"at":7,"value":"y"},{"type":1,"at":8,"value":"or"},{"type":1,"at":1,"value":"el"},{"type":1,"at":5,"value":" "},{"type":1,"at":0,"value":"H"},{"type":1,"at":7,"value":"or"},{"type":1,"at":5,"value":" Wo"},{"type":1,"at":2,"value":"llo"},{"type":0,"at":5,"value":"w"},{"type":0,"at":7,"value":"tq"},{"type":0,"at":10,"value":"q"},{"type":0,"at":3,"value":"ey"},{"type":1,"at":6,"value":"rld"},{"type":1,"at":4,"value":"lo "},{"type":1,"at":4,"value":"o"}],"types":["76148f10-0097-11e7-a52c-81e37c0431f9|1","76124520-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|1","76124520-0097-11e7-a52c-81e37c0431f9|2","76137da0-0097-11e7-a52c-81e37c0431f9|1","760f5ef0-0097-11e7-a52c-81e37c0431f9|1","76148f10-0097-11e7-a52c-81e37c0431f9|2","76124520-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|2","76124520-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|2","761133b0-0097-11e7-a52c-81e37c0431f9|2","760f5ef0-0097-11e7-a52c-81e37c0431f9|2","761133b0-0097-11e7-a52c-81e37c0431f9|1","760f5ef0-0097-11e7-a52c-81e37c0431f9|1","76137da0-0097-11e7-a52c-81e37c0431f9|1","76124520-0097-11e7-a52c-81e37c0431f9|1","761133b0-0097-11e7-a52c-81e37c0431f9|2","76148f10-0097-11e7-a52c-81e37c0431f9|2","76137da0-0097-11e7-a52c-81e37c0431f9|2"]}
 Test complete: true
 
 Test failed

@@ -272,7 +272,7 @@ function checkTestPassed() {
 function reportStatus() {
   var opsStatStr = printOpsStat ? JSON.stringify(opsStat) : 'disabled';
   var modelOps = models.reduce(function(acc, model) {
-    return acc + 'model' + models.indexOf(model) + ': ' + model.returnedOps.length;
+    return acc + 'model' + models.indexOf(model) + ': ' + model.returnedOps.length + ' ';
   }, '');
   var modelData = models.reduce(function(acc, model) {
     return acc + '\nmodel' + models.indexOf(model) + ': ' + model.documentData.data;

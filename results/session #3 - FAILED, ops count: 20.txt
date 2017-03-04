@@ -1,25 +1,41 @@
 Waiting for the server to startup
 
 Status report
-    Requests - sent: 191, received by server: NaN, complete: 189, succeed: 186, failed: 3
-    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model1: 20, model2: 20
-    Server Ops - received: 20, with data: 5, stored: 20, keys stored: 20, updatesStored: 20, sent: 40
+    Requests - sent: 424, received by server: NaN, complete: 417, succeed: 409, failed: 8
+    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model0: 20model1: 20model2: 20model3: 20model4: 20model5: 20model6: 20model7: 20model8: 20model9: 20
+    Server Ops - received: 20, with data: 12, stored: 20, keys stored: 20, updatesStored: 20, sent: 200
     Document data: 
-        server: q
-        model1: wyrqld
-        model2: q
-        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":1,"at":2,"value":"ll"},{"type":0,"at":3,"value":"rw"},{"type":0,"at":7,"value":"w"},{"type":0,"at":3,"value":"y"},{"type":1,"at":1,"value":"e"},{"type":1,"at":6,"value":"ld"},{"type":1,"at":8,"value":"w "},{"type":0,"at":4,"value":"tt"},{"type":1,"at":1,"value":"o W"},{"type":1,"at":0,"value":"He"},{"type":1,"at":0,"value":"l"},{"type":1,"at":3,"value":"or"},{"type":1,"at":0,"value":"Ht"},{"type":0,"at":7,"value":"ty"},{"type":0,"at":1,"value":"ee"},{"type":1,"at":4,"value":"oWo"},{"type":1,"at":0,"value":"tee"},{"type":0,"at":5,"value":"tyw"},{"type":1,"at":4,"value":"tty"},{"type":0,"at":0,"value":"q"}],"types":["8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1"]}
+        server: Wowtwe
+model0: lltwteyto Wqorwtteld
+model1: llwto ywteWoyetqrld
+model2: llwt Wywteytorlqd
+model3: o wtryWwterldweqe
+model4: rwwteeqwte
+model5: wewtll wteyWorlqd
+model6: llwtoWywteorldq
+model7: HewtllowtetWorlqd
+model8: elwtwterqylo World
+model9: tewtewtelo qWrytorld
+        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":0,"at":6,"value":"ryt"},{"type":1,"at":0,"value":"H"},{"type":1,"at":4,"value":" "},{"type":0,"at":14,"value":"wee"},{"type":1,"at":9,"value":"ld"},{"type":1,"at":2,"value":"llo"},{"type":1,"at":4,"value":"o"},{"type":1,"at":2,"value":"ll"},{"type":0,"at":9,"value":"wte"},{"type":1,"at":0,"value":"H"},{"type":1,"at":1,"value":"e W"},{"type":1,"at":5,"value":" "},{"type":1,"at":0,"value":"Ho"},{"type":0,"at":11,"value":"t"},{"type":1,"at":3,"value":"l"},{"type":0,"at":8,"value":"ye"},{"type":0,"at":2,"value":"wte"},{"type":0,"at":9,"value":"q"},{"type":1,"at":8,"value":"t"},{"type":0,"at":4,"value":"wt"}],"types":["74733b20-0097-11e7-9368-b1de1e8b9dca|1","7476bd90-0097-11e7-9368-b1de1e8b9dca|2","7476bd90-0097-11e7-9368-b1de1e8b9dca|2","74733b20-0097-11e7-9368-b1de1e8b9dca|1","74742580-0097-11e7-9368-b1de1e8b9dca|2","74742580-0097-11e7-9368-b1de1e8b9dca|2","747250c0-0097-11e7-9368-b1de1e8b9dca|2","74733b20-0097-11e7-9368-b1de1e8b9dca|2","746f91a0-0097-11e7-9368-b1de1e8b9dca|1","7478e070-0097-11e7-9368-b1de1e8b9dca|2","74742580-0097-11e7-9368-b1de1e8b9dca|2","7477cf00-0097-11e7-9368-b1de1e8b9dca|2","74742580-0097-11e7-9368-b1de1e8b9dca|2","746f91a0-0097-11e7-9368-b1de1e8b9dca|1","7479cad0-0097-11e7-9368-b1de1e8b9dca|2","74713f50-0097-11e7-9368-b1de1e8b9dca|1","7478e070-0097-11e7-9368-b1de1e8b9dca|1","7477cf00-0097-11e7-9368-b1de1e8b9dca|1","747536f0-0097-11e7-9368-b1de1e8b9dca|2","746f91a0-0097-11e7-9368-b1de1e8b9dca|1"]}
 Test complete: true
 
 Status report
-    Requests - sent: 423, received by server: NaN, complete: 423, succeed: 415, failed: 8
-    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model1: 20, model2: 20
-    Server Ops - received: 20, with data: 5, stored: 20, keys stored: 20, updatesStored: 20, sent: 40
+    Requests - sent: 1078, received by server: NaN, complete: 1078, succeed: 1057, failed: 21
+    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model0: 20model1: 20model2: 20model3: 20model4: 20model5: 20model6: 20model7: 20model8: 20model9: 20
+    Server Ops - received: 20, with data: 12, stored: 20, keys stored: 20, updatesStored: 20, sent: 200
     Document data: 
-        server: q
-        model1: wyrqld
-        model2: q
-        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":1,"at":2,"value":"ll"},{"type":0,"at":3,"value":"rw"},{"type":0,"at":7,"value":"w"},{"type":0,"at":3,"value":"y"},{"type":1,"at":1,"value":"e"},{"type":1,"at":6,"value":"ld"},{"type":1,"at":8,"value":"w "},{"type":0,"at":4,"value":"tt"},{"type":1,"at":1,"value":"o W"},{"type":1,"at":0,"value":"He"},{"type":1,"at":0,"value":"l"},{"type":1,"at":3,"value":"or"},{"type":1,"at":0,"value":"Ht"},{"type":0,"at":7,"value":"ty"},{"type":0,"at":1,"value":"ee"},{"type":1,"at":4,"value":"oWo"},{"type":1,"at":0,"value":"tee"},{"type":0,"at":5,"value":"tyw"},{"type":1,"at":4,"value":"tty"},{"type":0,"at":0,"value":"q"}],"types":["8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1"]}
+        server: Wowtwe
+model0: lltwteyto Wqorwtteld
+model1: llwto ywteWoyetqrld
+model2: llwt Wywteytorlqd
+model3: o wtryWwterldweqe
+model4: rwwteeqwte
+model5: wewtll wteyWorlqd
+model6: llwtoWywteorldq
+model7: HewtllowtetWorlqd
+model8: elwtwterqylo World
+model9: tewtewtelo qWrytorld
+        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":0,"at":6,"value":"ryt"},{"type":1,"at":0,"value":"H"},{"type":1,"at":4,"value":" "},{"type":0,"at":14,"value":"wee"},{"type":1,"at":9,"value":"ld"},{"type":1,"at":2,"value":"llo"},{"type":1,"at":4,"value":"o"},{"type":1,"at":2,"value":"ll"},{"type":0,"at":9,"value":"wte"},{"type":1,"at":0,"value":"H"},{"type":1,"at":1,"value":"e W"},{"type":1,"at":5,"value":" "},{"type":1,"at":0,"value":"Ho"},{"type":0,"at":11,"value":"t"},{"type":1,"at":3,"value":"l"},{"type":0,"at":8,"value":"ye"},{"type":0,"at":2,"value":"wte"},{"type":0,"at":9,"value":"q"},{"type":1,"at":8,"value":"t"},{"type":0,"at":4,"value":"wt"}],"types":["74733b20-0097-11e7-9368-b1de1e8b9dca|1","7476bd90-0097-11e7-9368-b1de1e8b9dca|2","7476bd90-0097-11e7-9368-b1de1e8b9dca|2","74733b20-0097-11e7-9368-b1de1e8b9dca|1","74742580-0097-11e7-9368-b1de1e8b9dca|2","74742580-0097-11e7-9368-b1de1e8b9dca|2","747250c0-0097-11e7-9368-b1de1e8b9dca|2","74733b20-0097-11e7-9368-b1de1e8b9dca|2","746f91a0-0097-11e7-9368-b1de1e8b9dca|1","7478e070-0097-11e7-9368-b1de1e8b9dca|2","74742580-0097-11e7-9368-b1de1e8b9dca|2","7477cf00-0097-11e7-9368-b1de1e8b9dca|2","74742580-0097-11e7-9368-b1de1e8b9dca|2","746f91a0-0097-11e7-9368-b1de1e8b9dca|1","7479cad0-0097-11e7-9368-b1de1e8b9dca|2","74713f50-0097-11e7-9368-b1de1e8b9dca|1","7478e070-0097-11e7-9368-b1de1e8b9dca|1","7477cf00-0097-11e7-9368-b1de1e8b9dca|1","747536f0-0097-11e7-9368-b1de1e8b9dca|2","746f91a0-0097-11e7-9368-b1de1e8b9dca|1"]}
 Test complete: true
 
 Test failed

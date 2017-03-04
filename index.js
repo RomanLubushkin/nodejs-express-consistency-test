@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 var minOpsCount = 10;
-var maxOpsCount = 20;
+var maxOpsCount = 50;
 var incOpsCount = 10;
 var sessionsPerStep = 2;
 
@@ -38,6 +38,7 @@ function runNextTest(opsCount) {
 
   test.stderr.on('data', function(data) {
     sessionResult += data + '\n';
+    console.log(data);
   });
 
   test.on('close', function(code) {

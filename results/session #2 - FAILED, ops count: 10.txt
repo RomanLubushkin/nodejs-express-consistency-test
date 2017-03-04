@@ -1,25 +1,31 @@
 Waiting for the server to startup
 
 Status report
-    Requests - sent: 210, received by server: NaN, complete: 208, succeed: 204, failed: 4
-    Client Ops - generated: 10, sent: 10, delivered: 10, lost: 0, model1: 10, model2: 10
-    Server Ops - received: 10, with data: 3, stored: 10, keys stored: 10, updatesStored: 10, sent: 20
+    Requests - sent: 380, received by server: NaN, complete: 376, succeed: 369, failed: 7
+    Client Ops - generated: 10, sent: 10, delivered: 10, lost: 0, model0: 10model1: 10model2: 10model3: 10model4: 10
+    Server Ops - received: 10, with data: 6, stored: 10, keys stored: 10, updatesStored: 10, sent: 50
     Document data: 
-        server: rlty
-        model1: Hloty Wor
-        model2: dty
-        ops stat: {"ins":3,"rm":7,"undo":0,"redo":0,"log":[{"type":1,"at":8,"value":"rl"},{"type":0,"at":2,"value":"twq"},{"type":1,"at":0,"value":"Hel"},{"type":0,"at":6,"value":"yr"},{"type":1,"at":3,"value":"Wo"},{"type":1,"at":4,"value":"ql"},{"type":1,"at":12,"value":"ld"},{"type":0,"at":4,"value":"ty"},{"type":1,"at":0,"value":"lo "},{"type":1,"at":3,"value":"w"}],"types":["8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8baf22c0-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2"]}
+        server: Heel Wlytqt
+model0: Heeooywtyqtrld
+model1: Heellywtyqto Wor
+model2: Hel Wqtld
+model3: Helorywtyqtld
+model4: Heel Woywqttyrld
+        ops stat: {"ins":4,"rm":6,"undo":0,"redo":0,"log":[{"type":1,"at":3,"value":"lo"},{"type":1,"at":6,"value":"W"},{"type":0,"at":5,"value":"qt"},{"type":1,"at":5,"value":" W"},{"type":0,"at":8,"value":"ywy"},{"type":1,"at":7,"value":"or"},{"type":1,"at":9,"value":"ld"},{"type":0,"at":2,"value":"e"},{"type":1,"at":5,"value":" "},{"type":0,"at":10,"value":"t"}],"types":["72d65400-0097-11e7-bd85-2bbd912c8f18|2","72d73e60-0097-11e7-bd85-2bbd912c8f18|2","72d65400-0097-11e7-bd85-2bbd912c8f18|1","72d394e0-0097-11e7-bd85-2bbd912c8f18|2","72d828c0-0097-11e7-bd85-2bbd912c8f18|1","72d65400-0097-11e7-bd85-2bbd912c8f18|2","72d54290-0097-11e7-bd85-2bbd912c8f18|2","72d394e0-0097-11e7-bd85-2bbd912c8f18|1","72d73e60-0097-11e7-bd85-2bbd912c8f18|2","72d828c0-0097-11e7-bd85-2bbd912c8f18|1"]}
 Test complete: true
 
 Status report
-    Requests - sent: 456, received by server: NaN, complete: 456, succeed: 447, failed: 9
-    Client Ops - generated: 10, sent: 10, delivered: 10, lost: 0, model1: 10, model2: 10
-    Server Ops - received: 10, with data: 3, stored: 10, keys stored: 10, updatesStored: 10, sent: 20
+    Requests - sent: 823, received by server: NaN, complete: 823, succeed: 807, failed: 16
+    Client Ops - generated: 10, sent: 10, delivered: 10, lost: 0, model0: 10model1: 10model2: 10model3: 10model4: 10
+    Server Ops - received: 10, with data: 6, stored: 10, keys stored: 10, updatesStored: 10, sent: 50
     Document data: 
-        server: rlty
-        model1: Hloty Wor
-        model2: dty
-        ops stat: {"ins":3,"rm":7,"undo":0,"redo":0,"log":[{"type":1,"at":8,"value":"rl"},{"type":0,"at":2,"value":"twq"},{"type":1,"at":0,"value":"Hel"},{"type":0,"at":6,"value":"yr"},{"type":1,"at":3,"value":"Wo"},{"type":1,"at":4,"value":"ql"},{"type":1,"at":12,"value":"ld"},{"type":0,"at":4,"value":"ty"},{"type":1,"at":0,"value":"lo "},{"type":1,"at":3,"value":"w"}],"types":["8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8baf22c0-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2"]}
+        server: Heel Wlytqt
+model0: Heeooywtyqtrld
+model1: Heellywtyqto Wor
+model2: Hel Wqtld
+model3: Helorywtyqtld
+model4: Heel Woywqttyrld
+        ops stat: {"ins":4,"rm":6,"undo":0,"redo":0,"log":[{"type":1,"at":3,"value":"lo"},{"type":1,"at":6,"value":"W"},{"type":0,"at":5,"value":"qt"},{"type":1,"at":5,"value":" W"},{"type":0,"at":8,"value":"ywy"},{"type":1,"at":7,"value":"or"},{"type":1,"at":9,"value":"ld"},{"type":0,"at":2,"value":"e"},{"type":1,"at":5,"value":" "},{"type":0,"at":10,"value":"t"}],"types":["72d65400-0097-11e7-bd85-2bbd912c8f18|2","72d73e60-0097-11e7-bd85-2bbd912c8f18|2","72d65400-0097-11e7-bd85-2bbd912c8f18|1","72d394e0-0097-11e7-bd85-2bbd912c8f18|2","72d828c0-0097-11e7-bd85-2bbd912c8f18|1","72d65400-0097-11e7-bd85-2bbd912c8f18|2","72d54290-0097-11e7-bd85-2bbd912c8f18|2","72d394e0-0097-11e7-bd85-2bbd912c8f18|1","72d73e60-0097-11e7-bd85-2bbd912c8f18|2","72d828c0-0097-11e7-bd85-2bbd912c8f18|1"]}
 Test complete: true
 
 Test failed
