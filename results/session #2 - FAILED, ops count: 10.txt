@@ -1,0 +1,26 @@
+Waiting for the server to startup
+
+Status report
+    Requests - sent: 210, received by server: NaN, complete: 208, succeed: 204, failed: 4
+    Client Ops - generated: 10, sent: 10, delivered: 10, lost: 0, model1: 10, model2: 10
+    Server Ops - received: 10, with data: 3, stored: 10, keys stored: 10, updatesStored: 10, sent: 20
+    Document data: 
+        server: rlty
+        model1: Hloty Wor
+        model2: dty
+        ops stat: {"ins":3,"rm":7,"undo":0,"redo":0,"log":[{"type":1,"at":8,"value":"rl"},{"type":0,"at":2,"value":"twq"},{"type":1,"at":0,"value":"Hel"},{"type":0,"at":6,"value":"yr"},{"type":1,"at":3,"value":"Wo"},{"type":1,"at":4,"value":"ql"},{"type":1,"at":12,"value":"ld"},{"type":0,"at":4,"value":"ty"},{"type":1,"at":0,"value":"lo "},{"type":1,"at":3,"value":"w"}],"types":["8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8baf22c0-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2"]}
+Test complete: true
+
+Status report
+    Requests - sent: 456, received by server: NaN, complete: 456, succeed: 447, failed: 9
+    Client Ops - generated: 10, sent: 10, delivered: 10, lost: 0, model1: 10, model2: 10
+    Server Ops - received: 10, with data: 3, stored: 10, keys stored: 10, updatesStored: 10, sent: 20
+    Document data: 
+        server: rlty
+        model1: Hloty Wor
+        model2: dty
+        ops stat: {"ins":3,"rm":7,"undo":0,"redo":0,"log":[{"type":1,"at":8,"value":"rl"},{"type":0,"at":2,"value":"twq"},{"type":1,"at":0,"value":"Hel"},{"type":0,"at":6,"value":"yr"},{"type":1,"at":3,"value":"Wo"},{"type":1,"at":4,"value":"ql"},{"type":1,"at":12,"value":"ld"},{"type":0,"at":4,"value":"ty"},{"type":1,"at":0,"value":"lo "},{"type":1,"at":3,"value":"w"}],"types":["8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2","8baf22c0-0094-11e7-8af2-213f19e132ce|1","8baf22c0-0094-11e7-8af2-213f19e132ce|2","8bad9c20-0094-11e7-8af2-213f19e132ce|2"]}
+Test complete: true
+
+Test failed
+

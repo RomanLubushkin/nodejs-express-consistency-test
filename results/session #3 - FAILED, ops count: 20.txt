@@ -1,0 +1,26 @@
+Waiting for the server to startup
+
+Status report
+    Requests - sent: 191, received by server: NaN, complete: 189, succeed: 186, failed: 3
+    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model1: 20, model2: 20
+    Server Ops - received: 20, with data: 5, stored: 20, keys stored: 20, updatesStored: 20, sent: 40
+    Document data: 
+        server: q
+        model1: wyrqld
+        model2: q
+        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":1,"at":2,"value":"ll"},{"type":0,"at":3,"value":"rw"},{"type":0,"at":7,"value":"w"},{"type":0,"at":3,"value":"y"},{"type":1,"at":1,"value":"e"},{"type":1,"at":6,"value":"ld"},{"type":1,"at":8,"value":"w "},{"type":0,"at":4,"value":"tt"},{"type":1,"at":1,"value":"o W"},{"type":1,"at":0,"value":"He"},{"type":1,"at":0,"value":"l"},{"type":1,"at":3,"value":"or"},{"type":1,"at":0,"value":"Ht"},{"type":0,"at":7,"value":"ty"},{"type":0,"at":1,"value":"ee"},{"type":1,"at":4,"value":"oWo"},{"type":1,"at":0,"value":"tee"},{"type":0,"at":5,"value":"tyw"},{"type":1,"at":4,"value":"tty"},{"type":0,"at":0,"value":"q"}],"types":["8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1"]}
+Test complete: true
+
+Status report
+    Requests - sent: 423, received by server: NaN, complete: 423, succeed: 415, failed: 8
+    Client Ops - generated: 20, sent: 20, delivered: 20, lost: 0, model1: 20, model2: 20
+    Server Ops - received: 20, with data: 5, stored: 20, keys stored: 20, updatesStored: 20, sent: 40
+    Document data: 
+        server: q
+        model1: wyrqld
+        model2: q
+        ops stat: {"ins":8,"rm":12,"undo":0,"redo":0,"log":[{"type":1,"at":2,"value":"ll"},{"type":0,"at":3,"value":"rw"},{"type":0,"at":7,"value":"w"},{"type":0,"at":3,"value":"y"},{"type":1,"at":1,"value":"e"},{"type":1,"at":6,"value":"ld"},{"type":1,"at":8,"value":"w "},{"type":0,"at":4,"value":"tt"},{"type":1,"at":1,"value":"o W"},{"type":1,"at":0,"value":"He"},{"type":1,"at":0,"value":"l"},{"type":1,"at":3,"value":"or"},{"type":1,"at":0,"value":"Ht"},{"type":0,"at":7,"value":"ty"},{"type":0,"at":1,"value":"ee"},{"type":1,"at":4,"value":"oWo"},{"type":1,"at":0,"value":"tee"},{"type":0,"at":5,"value":"tyw"},{"type":1,"at":4,"value":"tty"},{"type":0,"at":0,"value":"q"}],"types":["8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d48fca0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|2","8d474ef0-0094-11e7-96c3-7fb629675b97|1","8d474ef0-0094-11e7-96c3-7fb629675b97|2","8d48fca0-0094-11e7-96c3-7fb629675b97|1"]}
+Test complete: true
+
+Test failed
+
